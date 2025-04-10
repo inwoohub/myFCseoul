@@ -32,5 +32,3 @@ function MainPage() {
   )
 }
 export default MainPage;
-
-// 테스트 커밋
