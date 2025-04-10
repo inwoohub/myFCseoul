@@ -1,0 +1,14 @@
+.MPRankingPage{
+    width: 28vw;
+    background-color: #61dafb;
+
+}
+
+/* 화면이 768px 이하일 때 */
+@media (max-width: 768px) {
+    .MPRankingPage {
+        width: 70%;
+        height: 30vh;
+        margin: 0 auto; /* 중앙 정렬 */
+    }
+}

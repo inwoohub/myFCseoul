@@ -1,0 +1,13 @@
+.MPStatisticsPage{
+    width: 28vw;
+    background-color: chocolate;
+}
+
+/* 화면이 768px 이하일 때 */
+@media (max-width: 768px) {
+    .MPStatisticsPage {
+        width: 70%;
+        height: 30vh;
+        margin: 0 auto; /* 중앙 정렬 */
+    }
+}

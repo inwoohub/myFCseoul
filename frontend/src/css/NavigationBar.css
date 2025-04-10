@@ -1,0 +1,96 @@
+.NavigationBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 좌측과 우측에 요소 분배 */
+    padding: 5px 20px;
+    background-color: #A81D1C;
+    height: 6vh;
+}
+
+.Navigation_logoimage {
+    width: 40px;
+    height: 40px;
+    margin-right: 1vw;
+}
+
+.Navigation_title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top:0.5vh;
+    color: #EFE7E7;
+    cursor: pointer;
+}
+
+/* 상단 메뉴 스타일 */
+.Navigation_nav ul {
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex;
+    gap: 10vh;
+    list-style: none;
+    margin-left: 2vw;
+    color: #EFE7E7;
+    cursor: pointer;
+}
+
+.Navigation_sign {
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: 2vw;
+    cursor: pointer;
+}
+
+/* 데스크탑 기본 스타일 */
+.Navigation_nav,
+.Navigation_sign {
+    display: block;
+    color: #EFE7E7;
+    cursor: pointer;
+}
+
+/* 햄버거 버튼은 기본적으로 숨김 */
+.Hamburger {
+    display: none;
+    background-color: #A81D1C;
+    color: #EFE7E7;
+    border: 2px solid #EFE7E7;
+    cursor: pointer;
+}
+
+/* 화면 폭 768px 이하에서는 */
+@media (max-width: 768px) {
+    .Navigation_nav,
+    .Navigation_sign {
+        display: none; /* 기존 메뉴와 로그인/회원가입 숨김 */
+    }
+    .Hamburger {
+        display: block;  /* 햄버거 버튼 보이게 */
+    }
+}
+
+/* 모바일용 메뉴 (토글 시 표시) */
+.Mobile_nav {
+    position: absolute;
+    top: 7vh;
+    right: 0;
+    width: 30vw;
+    background-color: #9E1819;
+    height: 50vh;
+}
+
+.Mobile_nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+}
+
+.Mobile_nav li {
+    justify-content: center;
+    padding: 10px;
+    border-bottom: 1px solid #EFE7E7;
+    color: #EFE7E7;
+    cursor: pointer;
+}
+
+
