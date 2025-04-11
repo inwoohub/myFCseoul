@@ -1,19 +1,27 @@
-// NavigationBar.js
 import React, { useState } from "react";
 import "../css/NavigationBar.css";
+import LoginModal from "./LoginModal"; // 모달 컴포넌트 import
 
 function NavigationBar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
         console.log("Mobile Menu Open: ", !isMobileMenuOpen);
     };
 
+    const openLoginModal = () => {
+        setIsLoginModalOpen(true);
+    };
+
+    const closeLoginModal = () => {
+        setIsLoginModalOpen(false);
+    };
 
     return (
         <header className="NavigationBar">
-            <div style={{display:"flex" ,gap:"1vw"}}>
+            <div style={{display:"flex", gap:"1vw"}}>
                 <img
                     className="Navigation_logoimage"
                     alt="seoul_logo"
@@ -31,8 +39,10 @@ function NavigationBar() {
                 </ul>
             </nav>
 
-            {/* 데스크탑용 로그인/회원가입 */}
-            <span className="Navigation_sign">로그인/회원가입</span>
+            {/* 데스크탑용 로그인/회원가입 - 클릭 시 로그인 모달 열림 */}
+            <span className="Navigation_sign" onClick={openLoginModal}>
+                로그인/회원가입
+            </span>
 
             {/* 모바일용 햄버거 버튼 */}
             <button className="Hamburger" onClick={toggleMobileMenu}>
@@ -45,10 +55,13 @@ function NavigationBar() {
                     <ul>
                         <li>일정</li>
                         <li>Ai 경기 기록</li>
-                        <li>로그인/회원가입</li>
+                        <li onClick={openLoginModal}>로그인/회원가입</li>
                     </ul>
                 </nav>
             )}
+
+            {/* 로그인 모달 조건부 렌더링 */}
+            {isLoginModalOpen && <LoginModal onClose={closeLoginModal} />}
         </header>
     );
 }

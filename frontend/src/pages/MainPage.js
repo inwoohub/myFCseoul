@@ -6,11 +6,7 @@ import MPRanking from "../components/MPRanking";
 import "../css/MainPage.css";
 
 function MainPage() {
-    useEffect(() => {
-        fetch("/api/hello")
-            .then(res => res.text())
-            .then(data => console.log(data));
-    }, []);
+
 
 
     return (
