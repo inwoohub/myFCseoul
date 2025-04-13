@@ -55,6 +55,7 @@
     font-size: 0.9rem;
     color: #EFE7E7;
     box-sizing: border-box;
+
 }
 
 .monthSection h4 {
@@ -162,4 +163,10 @@
 .SchduleListbtn:hover{
     background-color: #1e2026;
     border: 1px solid #e4e1e1;
+}
+
+/* 결과가 등록된 경기 li 요소의 전체 텍스트 색상을 변경 (예: 빨간색) */
+.Schedulelitext.result-registered {
+    color: #0069d9; /* 원하는 색상으로 변경 */
+    font-weight: bold;
 }

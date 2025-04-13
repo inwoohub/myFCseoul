@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import ScheduleRegistrationModal from "../components/ScheduleRegistrationModal";
+import ScoreUpdateModal from "../components/ScoreUpdateModal";
 import "../css/ScheduleList.css";
 
-// 기존 시간 포맷 함수
+// 시간 포맷 함수
 function formatTime(timeString) {
     const parts = timeString.split(":");
     if (parts.length < 2) return timeString;
     return `${parts[0]}:${parts[1]}`;
 }
 
-// 새 날짜 포맷 함수: "15일(토)" 형태로 변환
+// 날짜 포맷 함수: "15일(토)" 형태
 function formatDateWithDay(dateString) {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -18,14 +19,16 @@ function formatDateWithDay(dateString) {
 }
 
 function ScheduleList({ user, className }) {
-    // 상태 설정: 스케줄 데이터, 로딩 상태, 모달(일정 등록, 출석 선택) 오픈 여부, 선택된 경기
     const [schedules, setSchedules] = useState([]);
+    const [myDataList, setMyDataList] = useState([]); // 출석 상태 데이터
     const [loading, setLoading] = useState(true);
     const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
     const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
     const [selectedSchedule, setSelectedSchedule] = useState(null);
+    const [isScoreUpdateModalOpen, setIsScoreUpdateModalOpen] = useState(false);
+    const [selectedScoreSchedule, setSelectedScoreSchedule] = useState(null);
 
-    // 컴포넌트 마운트 시 API 호출 (일정 데이터 가져오기)
+    // 일정 데이터 불러오기
     useEffect(() => {
         fetch("/api/schedule")
             .then((response) => {
@@ -44,17 +47,31 @@ function ScheduleList({ user, className }) {
             });
     }, []);
 
-    // 일정 등록 모달 열기/닫기 (관리자 전용)
-    const openRegistrationModal = () => {
-        setIsRegistrationModalOpen(true);
-    };
-    const closeRegistrationModal = () => {
-        setIsRegistrationModalOpen(false);
-    };
+    // 출석 상태 데이터 불러오기
+    useEffect(() => {
+        if (user) {
+            fetch("/api/mydata", { credentials: "include" })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("출석 데이터를 불러오지 못했습니다.");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    setMyDataList(data);
+                })
+                .catch((error) => {
+                    console.error("출석 데이터를 불러오는데 실패:", error);
+                });
+        }
+    }, [user]);
 
-    // 출석(직관) 선택 모달 열기: 해당 경기 항목을 클릭하면 호출
+    // 모달 열기/닫기 함수
+    const openRegistrationModal = () => setIsRegistrationModalOpen(true);
+    const closeRegistrationModal = () => setIsRegistrationModalOpen(false);
+
     const openAttendanceModal = (sch) => {
-        if (!user) return; // 로그인한 사용자만 처리
+        if (!user) return;
         setSelectedSchedule(sch);
         setIsAttendanceModalOpen(true);
     };
@@ -63,21 +80,26 @@ function ScheduleList({ user, className }) {
         setSelectedSchedule(null);
     };
 
-    // 출석(직관) 상태 선택 처리 (attended: 1 → "직관 완료", 0 → "직관 미완료")
+    // 결과 등록 모달 열기/닫기 – ✏️ 버튼으로만 열림
+    const openScoreUpdateModal = () => setIsScoreUpdateModalOpen(true);
+    const closeScoreUpdateModal = () => {
+        setIsScoreUpdateModalOpen(false);
+        setSelectedScoreSchedule(null);
+    };
+
+    // 출석 상태 저장 처리
     const handleAttendanceSelection = (attendedValue) => {
         if (!selectedSchedule || !user) return;
         const payload = {
             scheduleId: selectedSchedule.scheduleId,
-            attended: attendedValue
+            attended: attendedValue,
         };
 
         fetch("/api/mydata", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
         })
             .then((response) => {
                 if (!response.ok) {
@@ -85,14 +107,26 @@ function ScheduleList({ user, className }) {
                 }
                 return response.json();
             })
-            .then((data) => {
+            .then(() => {
                 alert("출석 상태가 저장되었습니다.");
+                setMyDataList((prevData) => {
+                    const withoutCurrent = prevData.filter(
+                        (item) => item.schedule.scheduleId !== selectedSchedule.scheduleId
+                    );
+                    return [...withoutCurrent, { schedule: selectedSchedule, attended: attendedValue }];
+                });
                 closeAttendanceModal();
             })
             .catch((error) => {
                 console.error("출석 상태 저장 실패:", error);
                 alert("출석 상태 저장에 실패하였습니다.");
             });
+    };
+
+    // schedule의 출석 상태 조회 함수
+    const getAttendanceForSchedule = (scheduleId) => {
+        const record = myDataList.find((item) => item.schedule.scheduleId === scheduleId);
+        return record ? record.attended : undefined;
     };
 
     if (loading) {
@@ -114,14 +148,12 @@ function ScheduleList({ user, className }) {
                         <button onClick={openRegistrationModal}>일정 등록</button>
                     </div>
                 )}
-                {isRegistrationModalOpen && (
-                    <ScheduleRegistrationModal onClose={closeRegistrationModal} />
-                )}
+                {isRegistrationModalOpen && <ScheduleRegistrationModal onClose={closeRegistrationModal} />}
             </div>
         );
     }
 
-    // 월별 그룹화: 날짜 (YYYY-MM-DD) 문자열에서 월 추출
+    // 월별 그룹화 (matchDate 기준)
     const groupedSchedules = schedules.reduce((acc, sch) => {
         const [, month] = sch.matchDate.split("-");
         const numericMonth = parseInt(month, 10);
@@ -132,9 +164,8 @@ function ScheduleList({ user, className }) {
         return acc;
     }, {});
 
-    // 그룹화된 월을 오름차순 정렬
     const sortedMonthKeys = Object.keys(groupedSchedules)
-        .map((key) => parseInt(key, 10))
+        .map(Number)
         .sort((a, b) => a - b);
 
     return (
@@ -156,19 +187,68 @@ function ScheduleList({ user, className }) {
                                     let matchType = "";
                                     if (sch.homeTeam === "서울") {
                                         opponent = sch.awayTeam;
-                                        matchType = "주";
+                                        matchType = "(H)";
                                     } else if (sch.awayTeam === "서울") {
                                         opponent = sch.homeTeam;
-                                        matchType = "원정";
+                                        matchType = "(A)";
                                     } else {
                                         opponent = `${sch.homeTeam} vs. ${sch.awayTeam}`;
                                     }
 
+                                    // 출석 상태 조회
+                                    const attendance = getAttendanceForSchedule(sch.scheduleId);
+                                    const attendanceIcon = attendance === 1 ? "✅" : attendance === 0 ? "❌" : "";
+
+                                    // 경기 시작 시간 비교
+                                    const matchDateTime = new Date(`${sch.matchDate}T${sch.matchTime}`);
+                                    const now = new Date();
+                                    const isPast = matchDateTime < now;
+
                                     return (
-                                        <li key={sch.scheduleId} onClick={() => openAttendanceModal(sch)} className="Schedulelitext">
+                                        <li
+                                            key={sch.scheduleId}
+                                            onClick={() => {
+                                                // 로그인하지 않은 경우 처리
+                                                if (!user) {
+                                                    alert("로그인 후 이용해 주세요.");
+                                                    return;
+                                                }
+                                                // 로그인 상태라면 경기 시간이 지난 경우 출석 모달 열기, 아니면 경고 메시지 표시
+                                                if (isPast) {
+                                                    openAttendanceModal(sch);
+                                                } else {
+                                                    alert("경기가 아직 진행되지 않아 출석 상태를 등록할 수 없습니다.");
+                                                }
+                                            }}
+                                            className={`Schedulelitext ${sch.scoreHome !== null && sch.scoreAway !== null ? "result-registered" : ""}`}
+                                        >
                                             {formatDateWithDay(sch.matchDate)} {formatTime(sch.matchTime)}{" "}
-                                            {opponent}{matchType && `(${matchType})`}
+                                            {sch.scoreHome !== null && sch.scoreAway !== null
+                                                ? (
+                                                    sch.homeTeam === "서울"
+                                                        ? `${sch.homeTeam} ${sch.scoreHome} : ${sch.scoreAway} ${opponent}`
+                                                        : `${opponent} ${sch.scoreHome} : ${sch.scoreAway} ${sch.awayTeam}`
+                                                )
+                                                : `서울 vs ${opponent}`
+                                            }
+                                            {matchType && `${matchType}`}
+                                            {attendanceIcon && ` ${attendanceIcon}`}
+                                            {/* 관리자용 결과 업데이트 버튼 (✏️) */}
+                                            {user && user.role === "admin" && (
+                                                <button
+                                                    className="score-update-btn"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedScoreSchedule(sch);
+                                                        openScoreUpdateModal();
+                                                    }}
+                                                >
+                                                    ✏️
+                                                </button>
+                                            )}
                                         </li>
+
+
                                     );
                                 })}
                             </ul>
@@ -177,19 +257,16 @@ function ScheduleList({ user, className }) {
                 })}
             </div>
 
-            {isRegistrationModalOpen && (
-                <ScheduleRegistrationModal onClose={closeRegistrationModal} />
-            )}
-
-            {/* 출석(직관) 선택 모달 */}
+            {isRegistrationModalOpen && <ScheduleRegistrationModal onClose={closeRegistrationModal} />}
             {isAttendanceModalOpen && selectedSchedule && (
                 <div className="attendanceModal">
                     <div className="attendanceModalContent">
                         <button className="modal-close" onClick={closeAttendanceModal}>X</button>
-                        {/* Login 컴포넌트 포함 */}
                         <h4>직관 여부 선택</h4>
                         <p>
-                            {`${formatDateWithDay(selectedSchedule.matchDate)} ${formatTime(selectedSchedule.matchTime)} 시 ${
+                            {`${formatDateWithDay(selectedSchedule.matchDate)} ${formatTime(
+                                selectedSchedule.matchTime
+                            )} 시 ${
                                 selectedSchedule.homeTeam === "서울"
                                     ? selectedSchedule.awayTeam
                                     : selectedSchedule.awayTeam === "서울"
@@ -200,11 +277,23 @@ function ScheduleList({ user, className }) {
                             {"아래 옵션에서 확인해 주세요."}
                         </p>
                         <div className="attendanceOptions">
-                            <button className="SchduleListbtn" onClick={() => handleAttendanceSelection(1)}>직관 완료</button>
-                            <button className="SchduleListbtn" onClick={() => handleAttendanceSelection(0)}>직관 미완료</button>
+                            <button className="SchduleListbtn" onClick={() => handleAttendanceSelection(1)}>
+                                직관 완료
+                            </button>
+                            <button className="SchduleListbtn" onClick={() => handleAttendanceSelection(0)}>
+                                직관 미완료
+                            </button>
                         </div>
                     </div>
                 </div>
+            )}
+            {isScoreUpdateModalOpen && selectedScoreSchedule && (
+                <ScoreUpdateModal
+                    schedule={selectedScoreSchedule}
+                    onClose={closeScoreUpdateModal}
+                    onScoreUpdated={(updatedData) => {
+                    }}
+                />
             )}
         </div>
     );
