@@ -18,6 +18,10 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    // 역할(role) 필드 추가 (예: "user", "admin")
+    @Column(name = "role", nullable = false)
+    private String role;
+
     // 기본 생성자
     public User() {}
 
@@ -26,6 +30,10 @@ public class User {
     public void prePersist() {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
+        }
+        // 생성 시 role이 지정되지 않았다면 기본 role을 "user"로 설정할 수 있음
+        if (this.role == null || this.role.isEmpty()) {
+            this.role = "user";
         }
     }
 
@@ -47,5 +55,11 @@ public class User {
     }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 }

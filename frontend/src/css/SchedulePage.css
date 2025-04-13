@@ -1,0 +1,18 @@
+.SchedulePage{
+    background-color: #212121;
+}
+
+.SchedulePage2{
+    display: flex;
+}
+
+.ScheduleContent{
+    width: 65%;
+    border-right: 1px solid #EFE7E7;
+
+}
+
+.ScheduleStatistics{
+    width: 35%;
+    border-right: 1px solid #EFE7E7;
+}

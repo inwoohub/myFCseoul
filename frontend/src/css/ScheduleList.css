@@ -1,0 +1,165 @@
+/* ScheduleList.css */
+
+.ScheduleList {
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #333;
+    height: 91vh;
+}
+
+.ScheduleList h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 월별 섹션을 감싸는 컨테이너 */
+.monthContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 3vh;
+    max-height: 91vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* Firefox용: 스크롤바 색상, 스크롤바 굵기 설정 */
+    scrollbar-color: #EFE7E7 transparent; /* thumb, track */
+    scrollbar-width: thin;
+}
+
+/* WebKit (Chrome, Safari)용 스크롤바 스타일 */
+.monthContainer::-webkit-scrollbar {
+    width: 8px; /* 스크롤바 굵기 */
+}
+
+.monthContainer::-webkit-scrollbar-track {
+    background: transparent; /* 트랙 배경색, 필요에 따라 변경 */
+}
+
+.monthContainer::-webkit-scrollbar-thumb {
+    background-color: #EFE7E7; /* 스크롤바 색상, 원하는 색상 코드 사용 */
+    border-radius: 4px;
+}
+
+
+
+/* 월별 섹션 */
+.monthSection {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #282c34;
+    padding: 10px 15px;
+    width: 30%; /* 한 줄에 3개씩 배치 */
+    font-size: 0.9rem;
+    color: #EFE7E7;
+    box-sizing: border-box;
+}
+
+.monthSection h4 {
+    margin-top: 0;
+    font-size: 0.9rem;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+/* 스케줄 리스트 스타일 */
+.monthSection ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.monthSection li {
+    padding: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.monthSection li:last-child {
+    border-bottom: none;
+}
+
+/* 관리자 일정 등록 버튼 */
+.AdminScheduleRegistration {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+    height: 10vh;
+}
+
+.AdminScheduleRegistration button {
+    border: 1px solid #EFE7E7;
+    background-color: #282c34;
+    color: #fff;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.AdminScheduleRegistration button:hover {
+    background-color: #1e2026;
+    border: 1px solid #e4e1e1;
+}
+
+.attendanceModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.attendanceModalContent {
+    width: 30vw;
+    background: #282c34;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: #EFE7E7;
+    border: 1px solid #EFE7E7;
+    position: relative; /* 내부에 절대 위치 요소를 위한 기준 */
+}
+
+.attendanceOptions button {
+    margin: 5px;
+    padding: 8px 16px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #EFE7E7;
+}
+
+.Schedulelitext{
+    cursor: pointer;
+}
+
+.Schedulelitext:hover {
+    color: #F9D645;
+}
+
+.modal-close{
+    cursor: pointer;
+}
+
+.SchduleListbtn{
+    width: 6vw;
+    height: 6vh;
+    border: 1px solid #EFE7E7;
+    background-color: #282c34;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.SchduleListbtn:hover{
+    background-color: #1e2026;
+    border: 1px solid #e4e1e1;
+}

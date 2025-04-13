@@ -1,4 +1,5 @@
 package com.myfcseoul.backend.model;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -27,19 +28,6 @@ public class MyData {
     @Column(name = "attended")
     private Integer attended;
 
-    /**
-     * prediction: ENUM('승', '무', '패') (nullable)
-     * 편의상 String 타입으로 처리
-     */
-    @Column(name = "prediction")
-    private String prediction;
-
-    /**
-     * prediction_result: BOOLEAN (nullable)
-     */
-    @Column(name = "prediction_result")
-    private Boolean predictionResult;
-
     // 기본 생성자
     public MyData() {}
 
@@ -67,17 +55,5 @@ public class MyData {
     }
     public void setAttended(Integer attended) {
         this.attended = attended;
-    }
-    public String getPrediction() {
-        return prediction;
-    }
-    public void setPrediction(String prediction) {
-        this.prediction = prediction;
-    }
-    public Boolean getPredictionResult() {
-        return predictionResult;
-    }
-    public void setPredictionResult(Boolean predictionResult) {
-        this.predictionResult = predictionResult;
     }
 }

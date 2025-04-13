@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -17,7 +18,6 @@ import java.util.Map;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
-
     private final UserRepository userRepository;
 
     public CustomOAuth2UserService(UserRepository userRepository) {
@@ -51,17 +51,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user = userRepository.findByUserId(kakaoId)
                 .orElseGet(() -> {
                     User newUser = new User();
-                    newUser.setUserId(kakaoId);      // 카카오 고유 ID를 userId 필드에 저장
+                    newUser.setUserId(kakaoId);          // 카카오 고유 ID를 userId 필드에 저장
                     newUser.setNickname(nickname);
-                    newUser.setCreatedAt(LocalDateTime.now()); // 🟢 이 부분 꼭 필요!
+                    newUser.setCreatedAt(LocalDateTime.now());
+                    // 새로 생성하는 경우 기본 role을 "user"로 지정합니다.
+                    newUser.setRole("user");
                     return newUser;
                 });
 
+        // 기존 사용자라도 nickname이 없는 경우 업데이트
         if (user.getNickname() == null || user.getNickname().isEmpty()) {
             user.setNickname(nickname);
         }
 
-        logger.info("저장하기 전 User 정보: userId={}, nickname={}", user.getUserId(), user.getNickname());
+        logger.info("저장하기 전 User 정보: userId={}, nickname={}, role={}", user.getUserId(), user.getNickname(), user.getRole());
         userRepository.save(user);
         logger.info("사용자 저장 완료.");
 
