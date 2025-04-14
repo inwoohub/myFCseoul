@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../css/ScoreUpdate.css";
 
 function ScoreUpdate({ schedule, onClose, onScoreUpdated }) {
-    // Schedule 엔티티의 scoreHome, scoreAway, result 값을 초기값으로 사용합니다.
+    // ScoreUpdate 컴포넌트 초기값 설정
     const [scoreHome, setScoreHome] = useState(
         schedule.scoreHome !== null ? schedule.scoreHome : ""
     );
@@ -12,7 +12,7 @@ function ScoreUpdate({ schedule, onClose, onScoreUpdated }) {
     const [result, setResult] = useState(schedule.result || "");
 
     const handleSubmit = () => {
-        // 간단한 입력값 검증
+        // 입력값 검증
         if (scoreHome === "" || scoreAway === "" || result === "") {
             alert("모든 값을 입력해 주세요.");
             return;
@@ -52,6 +52,44 @@ function ScoreUpdate({ schedule, onClose, onScoreUpdated }) {
             });
     };
 
+    const handleDelete = () => {
+        // 삭제 전 확인
+        if (!window.confirm("다 날라가는데 진짜 삭제해?")) {
+            return;
+        }
+
+        const payload = {
+            scheduleId: schedule.scheduleId
+        };
+
+        fetch("/api/scheduleresult", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Delete failed.");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                alert("Match result deleted successfully!");
+                if (onScoreUpdated) {
+                    // 삭제 후 전용 콜백으로 처리할 수 있습니다.
+                    onScoreUpdated({ deleted: true, scheduleId: schedule.scheduleId });
+                }
+                onClose();
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error("Score delete error:", error);
+                alert("Failed to delete result.");
+            });
+    };
+
     return (
         <div className="ScoreUpdate_page">
             <div className="ScoreUpdate_modal_content">
@@ -65,7 +103,6 @@ function ScoreUpdate({ schedule, onClose, onScoreUpdated }) {
                     </p>
                 </div>
                 <div className="ScoreUpdate_input_group">
-                    {/* 홈 팀 이름을 라벨로 사용 */}
                     <label>{schedule.homeTeam} Score:</label>
                     <input
                         type="number"
@@ -74,7 +111,6 @@ function ScoreUpdate({ schedule, onClose, onScoreUpdated }) {
                     />
                 </div>
                 <div className="ScoreUpdate_input_group">
-                    {/* 원정 팀 이름을 라벨로 사용 */}
                     <label>{schedule.awayTeam} Score:</label>
                     <input
                         type="number"
@@ -91,8 +127,15 @@ function ScoreUpdate({ schedule, onClose, onScoreUpdated }) {
                         <option value="패">패</option>
                     </select>
                 </div>
-                <button className="ScoreUpdate_submit_btn" onClick={handleSubmit } >
+                <button className="ScoreUpdate_submit_btn" onClick={handleSubmit}>
                     등록
+                </button>
+                {/* 삭제 버튼 추가 */}
+                <button
+                    className="ScoreUpdate_delete_btn"
+                    onClick={handleDelete}
+                >
+                    결과 삭제
                 </button>
             </div>
         </div>
