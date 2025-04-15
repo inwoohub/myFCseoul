@@ -245,6 +245,8 @@
     margin-bottom:1vh;
 }
 
+
+
 .custom-day {
     background-color: #282c34;
     color: #EFE7E7;
@@ -269,6 +271,12 @@
     width: 90%;
     height: 50%;
     font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .react-calendar__navigation__label__labelText {
+        font-size: 17px;
+    }
 }
 
 .react-calendar__navigation__label:hover {

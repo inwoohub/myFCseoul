@@ -11,3 +11,57 @@
         margin: 0 auto; /* 중앙 정렬 */
     }
 }
+
+
+.custom-mainschedule .react-calendar {
+    width:28vw;
+    font-size: 0.85em; /* 원하시는 스타일 */
+}
+
+@media (max-width: 768px) {
+    .custom-mainschedule .react-calendar {
+        width: 80%;
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 768px) {
+    .calendar-container {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+
+
+.custom-mainschedule .react-calendar__tile {
+    position: relative; /* 자식의 absolute 위치 계산을 위한 속성 */
+    box-sizing: border-box; /* padding과 border를 요소의 크기에 포함 */
+    width: 40px;
+    height: 8vh;
+    padding: 10px;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: left; /* 좌측 정렬 */
+    display: flex;
+    align-items: flex-start; /* 위쪽 정렬 */
+    justify-content: flex-start; /* 좌측 정렬 */
+}
+
+.custom-mainschedule .react-calendar__tile--active {
+    background-color: #282c34 !important;  /* 원하는 배경색 */
+    color: #EFE7E7;             /* 원하는 텍스트 색상 */
+}
+
+.custom-mainschedule .calendar-container .weekday-tile {
+    color: #EFE7E7 ; /* 원하는 색상으로 변경하세요. */
+}
+
+.custom-mainschedule .react-calendar__navigation__arrow {
+    color: red !important;
+    font-size: 1.4rem;
+}
+
+.custom-mainschedule .react-calendar__navigation__arrow {
+    display: flex;
+}

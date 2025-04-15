@@ -25,8 +25,8 @@ function GameDetailModal({ schedules, onClose }) {
     };
 
     return (
-        <div className="gameDetailModalOverlay">
-            <div className="gameDetailModalContent">
+        <div className="gameDetailModalOverlay" onClick={onClose}>
+            <div className="gameDetailModalContent" onClick={(e) => e.stopPropagation()}>
                 <button className="modalCloseBtn" onClick={onClose}>X</button>
                 <span>경기 정보</span>
                 {schedules.map((sch) => (

@@ -20,9 +20,9 @@ function MainPage() {
             />
         </div>
         <div className="MainPagebottom">
-            <MPRanking className="MPRanking" />
-            <MPStatistics className="MPStatistics" />
             <MPSchedule className="MPSchedule" />
+            <MPStatistics className="MPStatistics" />
+            <MPRanking className="MPRanking" />
         </div>
     </div>
   )

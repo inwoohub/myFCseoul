@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import "../css/NavigationBar.css";
 import LoginModal from "./LoginModal"; // 모달 컴포넌트 import
 import { useNavigate } from "react-router-dom";
@@ -53,53 +54,67 @@ function NavigationBar() {
     };
 
     return (
-        <header className="NavigationBar">
-            <div className="LogoTitle" onClick={() => navigate("/")}>
-                <img
-                    className="Navigation_logoimage"
-                    alt="seoul_logo"
-                    src="/seoul_logo.png"
-                    style={{ cursor: "pointer" }}
-                />
-                <span className="Navigation_title">myFCseoul</span>
-            </div>
+        <>
+            <header className="NavigationBar">
+                <div className="LogoTitle" onClick={() => navigate("/")}>
+                    <img
+                        className="Navigation_logoimage"
+                        alt="seoul_logo"
+                        src="/seoul_logo.png"
+                        style={{ cursor: "pointer" }}
+                    />
+                    <span className="Navigation_title">myFCseoul</span>
+                </div>
 
-            {/* 데스크탑용 네비게이션 */}
-            <nav className="Navigation_nav">
-                <ul>
-                    <li onClick={() => navigate("/schedule")}>일정</li>
-                    <li onClick={() => navigate("/record")}>경기 기록</li>
-                    <li onClick={() => navigate("/statistics")}>Ai 경기 분석</li>
-                </ul>
-            </nav>
-
-            {/* 데스크탑용 로그인/회원가입 또는 닉네임 표시 */}
-            <span className="Navigation_sign" onClick={handleSignClick}>
-        {user ? `${user.nickname}님` : "로그인/회원가입"}
-      </span>
-
-            {/* 모바일용 햄버거 버튼 */}
-            <button className="Hamburger" onClick={toggleMobileMenu}>
-                ☰
-            </button>
-
-            {/* 모바일 메뉴 토글 영역 */}
-            {isMobileMenuOpen && (
-                <nav className="Mobile_nav">
-                    {/* 추가: 모바일 메뉴 최상단에 사용자 정보를 표시 */}
-                    <div className="Mobile_nav_header" onClick={handleSignClick}>
-                        {user ? `${user.nickname}님` : "로그인/회원가입"}
-                    </div>
+                {/* 데스크탑용 네비게이션 */}
+                <nav className="Navigation_nav">
                     <ul>
-                        <li>일정</li>
-                        <li>Ai 경기 기록</li>
+                        <li onClick={() => navigate("/schedule")}>일정</li>
+                        <li onClick={() => navigate("/diary")}>다이어리</li>
+                        <li onClick={() => navigate("/statistics")}>Ai 경기 분석</li>
                     </ul>
                 </nav>
-            )}
 
-            {/* 로그인 모달 조건부 렌더링 */}
-            {isLoginModalOpen && <LoginModal onClose={closeLoginModal} />}
-        </header>
+                {/* 데스크탑용 로그인/회원가입 또는 닉네임 표시 */}
+                <span className="Navigation_sign" onClick={handleSignClick}>
+          {user ? `${user.nickname}님` : "로그인/회원가입"}
+        </span>
+
+                {/* 모바일용 햄버거 버튼 */}
+                <button className="Hamburger" onClick={toggleMobileMenu}>
+                    ☰
+                </button>
+
+                {/* 로그인 모달 조건부 렌더링 */}
+                {isLoginModalOpen && <LoginModal onClose={closeLoginModal} />}
+            </header>
+
+            {/* React Portal을 통한 모바일 메뉴 렌더링 */}
+            {isMobileMenuOpen &&
+                createPortal(
+                    <nav
+                        className="Mobile_nav"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        // 스타일 혹은 CSS 파일에서 position, top, left, width, z-index 등 설정 필요
+                    >
+                        <div className="Mobile_nav_header" onClick={handleSignClick}>
+                            {user ? `${user.nickname}님` : "로그인/회원가입"}
+                        </div>
+                        <ul onClick={(e) => e.stopPropagation()}>
+                            <li onClick={() => { navigate("/schedule"); setIsMobileMenuOpen(false); }}>
+                                일정
+                            </li>
+                            <li onClick={() => { navigate("/diary"); setIsMobileMenuOpen(false); }}>
+                                다이어리
+                            </li>
+                            <li onClick={() => { navigate("/statistics"); setIsMobileMenuOpen(false); }}>
+                                Ai 경기 분석
+                            </li>
+                        </ul>
+                    </nav>,
+                    document.getElementById("mobile-menu-root")
+                )}
+        </>
     );
 }
 

@@ -92,12 +92,13 @@
 
 /* 모바일용 메뉴 (토글 시 표시) */
 .Mobile_nav {
-    position: absolute;
+    position: fixed;
     top: 7vh;
     left: 0;
     width: 30vw;
-    background-color: #9E1819;
+    background-color: #9E1819 ;
     height: 50vh;
+    z-index: 1000;
 }
 
 .Mobile_nav ul {

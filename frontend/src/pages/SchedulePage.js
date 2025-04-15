@@ -100,7 +100,14 @@ function SchedulePage() {
     ).length;
 
     if (loadingSchedules) {
-        return <div>스케줄 데이터를 불러오는 중...</div>;
+        return <div style={{backgroundColor:"#212121" ,height:"100vh"}}>
+            <NavigationBar className="NavigationBar" />
+            <div style={{width:"100%",height:"100%",display:"flex",justifyContent:"center"}}>
+                <span style={{marginTop:"30vh",color:"#EFE7E7",fontSize:"30px"}}>
+                Loading...
+            </span>
+            </div>
+        </div>;
     }
 
     return (
