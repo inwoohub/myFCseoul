@@ -10,6 +10,16 @@ function SchedulePage() {
     const [myDataList, setMyDataList] = useState([]);
     const [schedules, setSchedules] = useState([]);
     const [loadingSchedules, setLoadingSchedules] = useState(true);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    // 화면 크기 변경 감지 (768px 이하이면 mobile로 설정)
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     // 사용자 정보 불러오기
     useEffect(() => {
@@ -103,17 +113,34 @@ function SchedulePage() {
                     <ScheduleList className="ScheduleList" user={user} />
                 </div>
 
+                {/* 모바일일 경우 ScheduleStatistics가 ScheduleContent 아래에 세로로 쌓입니다 */}
                 <div className="ScheduleStatistics">
-                    <AttendanceDoughnutChart
-                        winCount={attendanceWinCount}
-                        drawCount={attendanceDrawCount}
-                        loseCount={attendanceLoseCount}
-                    />
-                    <ScheduleWinRateChart
-                        winCount={scheduleWinCount}
-                        drawCount={scheduleDrawCount}
-                        loseCount={scheduleLoseCount}
-                    />
+                    <div style={{ color: "#9E1819", marginTop: "2vh", marginBottom: "4vh", marginLeft: "2vw", fontSize: "1.5rem", fontWeight: "bold" }}>
+                        <span>2025시즌 FC서울</span>
+                    </div>
+
+                    {/* flex 방향을 조건부로 설정합니다 */}
+                    <div style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: "3vw",
+                        flexDirection: isMobile ? "column" : "row"
+                    }}>
+                        {/* 768px 미만일 경우 ScheduleWinRateChart는 렌더링하지 않음 */}
+                        { !isMobile && (
+                            <ScheduleWinRateChart
+                                winCount={scheduleWinCount}
+                                drawCount={scheduleDrawCount}
+                                loseCount={scheduleLoseCount}
+                            />
+                        )}
+                        <AttendanceDoughnutChart
+                            winCount={attendanceWinCount}
+                            drawCount={attendanceDrawCount}
+                            loseCount={attendanceLoseCount}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
