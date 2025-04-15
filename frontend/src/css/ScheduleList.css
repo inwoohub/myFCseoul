@@ -12,34 +12,52 @@
     margin-bottom: 20px;
 }
 
+/* 밑에는 컨테이너임*/
+.scheduleList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap:20px;
+}
+
+@media (max-width: 768px) {
+    /* 현재 달 컨테이너 크기 및 정렬 변경 (필요에 따라 조정) */
+    .scheduleList {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* 세로 방향(메인 축) 중앙 정렬 */
+        align-items: center; /* 가로 방향(교차 축) 중앙 정렬 */
+    }
+}
+
+
 /* 월별 섹션을 감싸는 컨테이너 */
 .monthContainer {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: flex-start;
     margin-top: 3vh;
     max-height: 90vh;
     overflow-y: auto;
-    overflow-x: hidden;
-
+    overflow-x: auto;
     /* Firefox용: 스크롤바 색상, 스크롤바 굵기 설정 */
     scrollbar-color: #EFE7E7 transparent; /* thumb, track */
     scrollbar-width: thin;
+    font-size: 0.9rem;
+    color: #EFE7E7;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    width: 90%;
 }
 
 @media (max-width: 768px) {
-    /* 이전 달, 다음 달 숨기기 */
-    .schedulesContainer .monthContainer:first-child,
-    .schedulesContainer .monthContainer:last-child {
-        display: none;
-    }
-
-    /* 현재 달 컨테이너 크기 및 정렬 변경 (필요에 따라 조정) */
-    .schedulesContainer .monthContainer {
-        width: 80%;
-        padding: 10px;
-        margin: 0 auto;
-        max-height: 100%;
+    .monthContainer {
+        display: flex;
+        justify-content: center;
     }
 }
 
@@ -57,21 +75,6 @@
 .monthContainer::-webkit-scrollbar-thumb {
     background-color: #EFE7E7; /* 스크롤바 색상, 원하는 색상 코드 사용 */
     border-radius: 4px;
-}
-
-
-
-/* 월별 섹션 */
-.monthContainer {
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #282c34;
-    padding: 10px 15px;
-    width: 30%; /* 한 줄에 3개씩 배치 */
-    font-size: 0.9rem;
-    color: #EFE7E7;
-    box-sizing: border-box;
 }
 
 /* 관리자 일정 등록 버튼 */
@@ -238,7 +241,7 @@
 
 .react-calendar__navigation {
     display: flex;
-    height: 4vh;
+    height: 5vh;
     margin-bottom:1vh;
 }
 
@@ -265,6 +268,7 @@
     color: #EFE7E7;
     width: 90%;
     height: 50%;
+    font-size: 1.5rem;
 }
 
 .react-calendar__navigation__label:hover {
@@ -304,9 +308,8 @@
 }
 
 .react-calendar__tile--active {
-    background-color: #1e2026 !important;  /* 원하는 배경색 */
+    background-color: #282c34 !important;  /* 원하는 배경색 */
     color: #EFE7E7 !important;             /* 원하는 텍스트 색상 */
-    border: 1px solid #007bff !important;   /* 원하는 테두리 스타일 */
 }
 
 /* 오늘 날짜 강조 */
@@ -350,24 +353,9 @@
     color: #F9D645;
 }
 
-.scheduleListTitle {
-    width: 100%;
-    justify-content: center;
-    display: flex;
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    color: #EFE7E7;
-}
 .noSchedule {
     color: #777;
     font-style: italic;
-}
-
-.scheduleList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
 }
 
 .scheduleItem {

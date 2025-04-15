@@ -29,10 +29,13 @@ public class MyDataController {
     private ScheduleRepository scheduleRepository;
 
     /**
-     * 클라이언트에서 전달한 출석(직관) 정보를 저장합니다.
+     * 클라이언트에서 전달한 출석(직관) 정보를 저장 또는 업데이트합니다.
+     * 기존에 동일한 사용자와 경기의 MyData가 있는 경우 update,
+     * 없으면 새로 생성합니다.
+     *
      * @param request 클라이언트가 전송하는 JSON 데이터 (scheduleId, attended)
      * @param principal 현재 로그인한 사용자의 정보를 포함합니다.
-     * @return 저장 처리 결과 (JSON 형태)
+     * @return 저장 또는 업데이트 처리 결과 (JSON 형태)
      */
     @PostMapping
     public ResponseEntity<?> saveMyData(@RequestBody MyDataRequest request, Principal principal) {
@@ -49,17 +52,28 @@ public class MyDataController {
         }
         Schedule schedule = optionalSchedule.get();
 
-        // MyData 엔티티 생성 및 설정
-        MyData myData = new MyData();
-        myData.setUser(user);
-        myData.setSchedule(schedule);
-        myData.setAttended(request.getAttended());
+        // 같은 사용자와 스케줄에 해당하는 MyData가 이미 존재하는지 확인
+        Optional<MyData> existingDataOpt = myDataRepository.findByUserAndSchedule(user, schedule);
+        MyData myData;
+        String message;
+        if (existingDataOpt.isPresent()) {
+            // 기존 데이터가 있으면 업데이트
+            myData = existingDataOpt.get();
+            myData.setAttended(request.getAttended());
+            message = "Attendance updated successfully.";
+        } else {
+            // 없으면 새로 생성
+            myData = new MyData();
+            myData.setUser(user);
+            myData.setSchedule(schedule);
+            myData.setAttended(request.getAttended());
+            message = "Attendance saved successfully.";
+        }
 
-        // DB에 저장
+        // DB에 저장 (저장 시, update 및 새로 생성 모두 처리됨)
         myDataRepository.save(myData);
 
-        // JSON 형태의 응답 반환
-        return ResponseEntity.ok(Collections.singletonMap("message", "Attendance saved successfully."));
+        return ResponseEntity.ok(Collections.singletonMap("message", message));
     }
 
     /**

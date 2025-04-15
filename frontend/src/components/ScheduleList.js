@@ -116,19 +116,31 @@ function ScheduleList({ user, className }) {
             })
             .then(() => {
                 alert("출석 상태가 저장되었습니다.");
+                window.location.reload();
+                // 상태(myDataList)를 업데이트할 때, 기존에 해당 일정 기록이 있으면 업데이트, 없으면 추가
                 setMyDataList((prevData) => {
-                    const withoutCurrent = prevData.filter(
-                        (item) => item.schedule.scheduleId !== selectedSchedule.scheduleId
+                    const index = prevData.findIndex(
+                        (item) => item.schedule.scheduleId === selectedSchedule.scheduleId
                     );
-                    return [...withoutCurrent, { schedule: selectedSchedule, attended: attendedValue }];
+                    if (index !== -1) {
+                        // 기존 항목이 있다면 복사 후 attended 값을 업데이트
+                        const newData = [...prevData];
+                        newData[index] = { ...newData[index], attended: attendedValue };
+                        return newData;
+                    } else {
+                        // 기존 항목이 없으면 새 항목 추가
+                        return [...prevData, { schedule: selectedSchedule, attended: attendedValue }];
+                    }
                 });
                 closeAttendanceModal();
             })
             .catch((error) => {
                 console.error("출석 상태 저장 실패:", error);
                 alert("출석 상태 저장에 실패하였습니다.");
+                window.location.reload();
             });
     };
+
 
     // 특정 스케줄에 대한 출석 상태 조회 함수
     const getAttendanceForSchedule = (scheduleId) => {
@@ -140,8 +152,8 @@ function ScheduleList({ user, className }) {
     const handleMonthChange = (newMonth, newYear = currentYear) => {
         setCurrentMonth(newMonth);
         setCurrentYear(newYear);
-        setSelectedDate(new Date(newYear, newMonth - 1, 1));
     };
+
 
     // 좌측(이전 달) 버튼 핸들러
     const handlePrevMonth = () => {
@@ -250,10 +262,10 @@ function ScheduleList({ user, className }) {
                     ◀
                 </span>
                 <Calendar
-                    value={selectedDate}
+                    value={selectedDate}            // 사용자가 선택한 날짜
+                    activeStartDate={new Date(currentYear, currentMonth - 1, 1)}  // 보여지는 달
                     onChange={(value) => setSelectedDate(value)}
                     onClickDay={handleClickDay}
-                    activeStartDate={calendarViewDate}
                     calendarType="gregory"
                     // 768px 이하일 때는 숫자만, 그 이상은 "일"이 붙은 형식으로 렌더링
                     formatDay={(locale, date) =>
@@ -317,80 +329,67 @@ function ScheduleList({ user, className }) {
                     onScoreUpdated={(updatedData) => {}}
                 />
             )}
+                <div style={{width:"100%", display:"flex",justifyContent:"center"}}>
+                    {/* 현재 달 */}
+                    <div className="monthContainer">
+                        <div>
+                            {currentSchedules.length === 0 ? (
+                                <p className="noSchedule">등록된 일정이 없습니다.</p>
+                            ) : (
+                                <ul className="scheduleList">
+                                    {currentSchedules.map((sch) => {
+                                        let opponent = "";
+                                        let matchType = "";
+                                        if (sch.homeTeam === "서울") {
+                                            opponent = sch.awayTeam;
+                                            matchType = "(H)";
+                                        } else if (sch.awayTeam === "서울") {
+                                            opponent = sch.homeTeam;
+                                            matchType = "(A)";
+                                        } else {
+                                            opponent = `${sch.homeTeam} vs. ${sch.awayTeam}`;
+                                        }
+                                        const attendance = getAttendanceForSchedule(sch.scheduleId);
+                                        const attendanceIcon =
+                                            attendance === 1 ? "✅" : attendance === 0 ? "❌" : "직관 등록하기 ✏️";
+                                        const matchDateTime = new Date(`${sch.matchDate}T${sch.matchTime}`);
+                                        const now = new Date();
+                                        const isPast = matchDateTime < now;
 
-            {/* 하단 - 이전 달, 현재 달, 다음 달 일정 3개 컬럼 */}
-            <div className="schedulesContainer">
-                {/* 이전 달 */}
-                <div className="monthContainer">
-                    <span
-                        className="scheduleListTitle"
-                        onClick={() => handleMonthChange(prevMonthInfo.month, prevMonthInfo.year)}
-                        style={{ cursor: "pointer" }}
-                    >
-                        {prevMonthInfo.month}월 일정
-                    </span>
-                    {prevSchedules.length === 0 ? (
-                        <p className="noSchedule">등록된 일정이 없습니다.</p>
-                    ) : (
-                        <ul className="scheduleList">
-                            {prevSchedules.map((sch) => {
-                                // 상대팀 및 경기 타입 판별
-                                let opponent = "";
-                                let matchType = "";
-                                if (sch.homeTeam === "서울") {
-                                    opponent = sch.awayTeam;
-                                    matchType = "(H)";
-                                } else if (sch.awayTeam === "서울") {
-                                    opponent = sch.homeTeam;
-                                    matchType = "(A)";
-                                } else {
-                                    opponent = `${sch.homeTeam} vs. ${sch.awayTeam}`;
-                                }
+                                        // 구성할 일정 텍스트 내용
+                                        const scheduleText =
+                                            sch.scoreHome !== null && sch.scoreAway !== null
+                                                ? sch.homeTeam === "서울"
+                                                    ? `${sch.homeTeam} ${sch.scoreHome} : ${sch.scoreAway} ${opponent}`
+                                                    : `${opponent} ${sch.scoreHome} : ${sch.scoreAway} ${sch.awayTeam}`
+                                                : `서울 vs ${opponent}`;
 
-                                // 출석 아이콘 결정 (true/false 출석 여부)
-                                const attendance = getAttendanceForSchedule(sch.scheduleId);
-                                const attendanceIcon =
-                                    attendance === 1 ? "✅" : attendance === 0 ? "❌" : "직관 등록하기 ✏️";
-
-                                // 경기 시간 비교로 과거 경기 여부 판별
-                                const matchDateTime = new Date(`${sch.matchDate}T${sch.matchTime}`);
-                                const now = new Date();
-                                const isPast = matchDateTime < now;
-
-                                // 경기 정보 텍스트 구성 (점수가 있는 경우와 없는 경우)
-                                const scheduleText =
-                                    sch.scoreHome !== null && sch.scoreAway !== null
-                                        ? sch.homeTeam === "서울"
-                                            ? `${sch.homeTeam} ${sch.scoreHome} : ${sch.scoreAway} ${opponent}`
-                                            : `${opponent} ${sch.scoreHome} : ${sch.scoreAway} ${sch.awayTeam}`
-                                        : `서울 vs ${opponent}`;
-
-                                return (
-                                    <li
-                                        key={sch.scheduleId}
-                                        className={`scheduleItem ${
-                                            sch.scoreHome !== null && sch.scoreAway !== null ? "result-registered" : ""
-                                        }`}
-                                        onClick={() => {
-                                            if (!user) {
-                                                alert("로그인 후 이용해 주세요.");
-                                                return;
-                                            }
-                                            if (isPast) {
-                                                openAttendanceModal(sch);
-                                            } else {
-                                                alert("경기가 아직 진행되지 않아 직관 상태를 등록할 수 없습니다.");
-                                            }
-                                        }}
-                                    >
-                                        <div className="scheduleInfo">
+                                        return (
+                                            <li
+                                                key={sch.scheduleId}
+                                                className={`scheduleItem ${
+                                                    sch.scoreHome !== null && sch.scoreAway !== null ? "result-registered" : ""
+                                                }`}
+                                                onClick={() => {
+                                                    if (!user) {
+                                                        alert("로그인 후 이용해 주세요.");
+                                                        return;
+                                                    }
+                                                    if (isPast) {
+                                                        openAttendanceModal(sch);
+                                                    } else {
+                                                        alert("경기가 아직 진행되지 않아 직관 상태를 등록할 수 없습니다.");
+                                                    }
+                                                }}
+                                            >
+                                                <div className="scheduleInfo">
                                             <span className="scheduleDate">
                                                 {formatDateWithDay(sch.matchDate)}
                                             </span>
-                                            <span className="scheduleTime">
+                                                    <span className="scheduleTime">
                                                 {formatTime(sch.matchTime)}
                                             </span>
-                                            <span>
+                                                    <span>
                                                 {sch.scoreHome !== null && sch.scoreAway !== null ? (
                                                     sch.homeTeam === "서울" ? (
                                                         <span>
@@ -430,302 +429,39 @@ function ScheduleList({ user, className }) {
                                                     </span>
                                                 </span>
                                                     )) : (`서울 vs ${opponent}`)}
-                                                {matchType && ` ${matchType}`}
+                                                        {matchType && ` ${matchType}`}
                                             </span>
-                                            <span className="scheduleDetail">
+                                                    <span className="scheduleDetail">
                                                 {attendanceIcon && (
                                                     attendanceIcon === "직관 등록하기 ✏️" ? (
                                                         <>{attendanceIcon}</>
                                                     ) : (` ${attendanceIcon}`)
                                                 )}
                                             </span>
-                                        </div>
-                                        {user && user.role === "admin" && (
-                                            <button
-                                                className="scoreUpdateBtn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedScoreSchedule(sch);
-                                                    openScoreUpdateModal();
-                                                }}
-                                            >
-                                                결과 등록✏️
-                                            </button>
-                                        )}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
-                </div>
-
-                {/* 현재 달 */}
-                <div className="monthContainer">
-                    <span className="scheduleListTitle" style={{color:"#f1263c"}}>{currentMonth}월 일정</span>
-                    {currentSchedules.length === 0 ? (
-                        <p className="noSchedule">등록된 일정이 없습니다.</p>
-                    ) : (
-                        <ul className="scheduleList">
-                            {currentSchedules.map((sch) => {
-                                let opponent = "";
-                                let matchType = "";
-                                if (sch.homeTeam === "서울") {
-                                    opponent = sch.awayTeam;
-                                    matchType = "(H)";
-                                } else if (sch.awayTeam === "서울") {
-                                    opponent = sch.homeTeam;
-                                    matchType = "(A)";
-                                } else {
-                                    opponent = `${sch.homeTeam} vs. ${sch.awayTeam}`;
-                                }
-                                const attendance = getAttendanceForSchedule(sch.scheduleId);
-                                const attendanceIcon =
-                                    attendance === 1 ? "✅" : attendance === 0 ? "❌" : "직관 등록하기 ✏️";
-                                const matchDateTime = new Date(`${sch.matchDate}T${sch.matchTime}`);
-                                const now = new Date();
-                                const isPast = matchDateTime < now;
-
-                                // 구성할 일정 텍스트 내용
-                                const scheduleText =
-                                    sch.scoreHome !== null && sch.scoreAway !== null
-                                        ? sch.homeTeam === "서울"
-                                            ? `${sch.homeTeam} ${sch.scoreHome} : ${sch.scoreAway} ${opponent}`
-                                            : `${opponent} ${sch.scoreHome} : ${sch.scoreAway} ${sch.awayTeam}`
-                                        : `서울 vs ${opponent}`;
-
-                                return (
-                                    <li
-                                        key={sch.scheduleId}
-                                        className={`scheduleItem ${
-                                            sch.scoreHome !== null && sch.scoreAway !== null ? "result-registered" : ""
-                                        }`}
-                                        onClick={() => {
-                                            if (!user) {
-                                                alert("로그인 후 이용해 주세요.");
-                                                return;
-                                            }
-                                            if (isPast) {
-                                                openAttendanceModal(sch);
-                                            } else {
-                                                alert("경기가 아직 진행되지 않아 직관 상태를 등록할 수 없습니다.");
-                                            }
-                                        }}
-                                    >
-                                        <div className="scheduleInfo">
-                                            <span className="scheduleDate">
-                                                {formatDateWithDay(sch.matchDate)}
-                                            </span>
-                                            <span className="scheduleTime">
-                                                {formatTime(sch.matchTime)}
-                                            </span>
-                                            <span>
-                                                {sch.scoreHome !== null && sch.scoreAway !== null ? (
-                                                    sch.homeTeam === "서울" ? (
-                                                        <span>
-                                                    {/* '서울'이 홈팀인 경우 */}
-                                                            <span
-                                                                style={{
-                                                                    color:
-                                                                        sch.scoreHome > sch.scoreAway
-                                                                            ? "red"
-                                                                            : "inherit",
-                                                                }}>
-                                                        {sch.homeTeam}
-                                                    </span>
-                                                            {` ${sch.scoreHome} : ${sch.scoreAway} `}
-                                                            <span
-                                                                style={{color: sch.scoreHome < sch.scoreAway
-                                                                        ? "red"
-                                                                        : "inherit",}}>
-                                                        {opponent}
-                                                    </span>
-                                                </span>
-                                                    ) : (
-                                                        <span>
-                                                    {/* '서울'이 원정팀인 경우 */}
-                                                            <span
-                                                                style={{
-                                                                    color:
-                                                                        sch.scoreHome > sch.scoreAway
-                                                                            ? "red"
-                                                                            : "inherit",}}
-                                                            >{opponent}
-                                                    </span>
-                                                            {` ${sch.scoreHome} : ${sch.scoreAway} `}
-                                                            <span
-                                                                style={{color: sch.scoreHome < sch.scoreAway ? "red" : "inherit",}}
-                                                            >{sch.awayTeam}
-                                                    </span>
-                                                </span>
-                                                    )) : (`서울 vs ${opponent}`)}
-                                                {matchType && ` ${matchType}`}
-                                            </span>
-                                            <span className="scheduleDetail">
-                                                {attendanceIcon && (
-                                                    attendanceIcon === "직관 등록하기 ✏️" ? (
-                                                        <>{attendanceIcon}</>
-                                                    ) : (` ${attendanceIcon}`)
+                                                </div>
+                                                {user && user.role === "admin" && (
+                                                    <button
+                                                        className="scoreUpdateBtn"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedScoreSchedule(sch);
+                                                            openScoreUpdateModal();
+                                                        }}
+                                                    >
+                                                        결과 등록✏️
+                                                    </button>
                                                 )}
-                                            </span>
-                                        </div>
-                                        {user && user.role === "admin" && (
-                                            <button
-                                                className="scoreUpdateBtn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedScoreSchedule(sch);
-                                                    openScoreUpdateModal();
-                                                }}
-                                            >
-                                                결과 등록✏️
-                                            </button>
-                                        )}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
-                {/* 다음 달 */}
-                <div className="monthContainer">
-                    <span
-                        className="scheduleListTitle"
-                        onClick={() => handleMonthChange(nextMonthInfo.month, nextMonthInfo.year)}
-                        style={{ cursor: "pointer" }}
-                    >
-                        {nextMonthInfo.month}월 일정
-                    </span>
-                    {nextSchedules.length === 0 ? (
-                        <p className="noSchedule">등록된 일정이 없습니다.</p>
-                    ) : (
-                        <ul className="scheduleList">
-                            {nextSchedules.map((sch) => {
-                                // 상대팀 및 경기 형태 판별
-                                let opponent = "";
-                                let matchType = "";
-                                if (sch.homeTeam === "서울") {
-                                    opponent = sch.awayTeam;
-                                    matchType = "(H)";
-                                } else if (sch.awayTeam === "서울") {
-                                    opponent = sch.homeTeam;
-                                    matchType = "(A)";
-                                } else {
-                                    opponent = `${sch.homeTeam} vs. ${sch.awayTeam}`;
-                                }
 
-                                // 출석 아이콘 결정
-                                const attendance = getAttendanceForSchedule(sch.scheduleId);
-                                const attendanceIcon =
-                                    attendance === 1 ? "✅" : attendance === 0 ? "❌" : "직관 등록하기 ✏️";
 
-                                // 경기 날짜/시간 및 이전 경기 여부 판별
-                                const matchDateTime = new Date(`${sch.matchDate}T${sch.matchTime}`);
-                                const now = new Date();
-                                const isPast = matchDateTime < now;
-
-                                // 점수가 등록된 경우와 등록되지 않은 경우 텍스트 구성
-                                const scheduleText =
-                                    sch.scoreHome !== null && sch.scoreAway !== null
-                                        ? sch.homeTeam === "서울"
-                                            ? `${sch.homeTeam} ${sch.scoreHome} : ${sch.scoreAway} ${opponent}`
-                                            : `${opponent} ${sch.scoreHome} : ${sch.scoreAway} ${sch.awayTeam}`
-                                        : `서울 vs ${opponent}`;
-
-                                return (
-                                    <li
-                                        key={sch.scheduleId}
-                                        className={`scheduleItem ${
-                                            sch.scoreHome !== null && sch.scoreAway !== null ? "result-registered" : ""
-                                        }`}
-                                        onClick={() => {
-                                            if (!user) {
-                                                alert("로그인 후 이용해 주세요.");
-                                                return;
-                                            }
-                                            if (isPast) {
-                                                openAttendanceModal(sch);
-                                            } else {
-                                                alert("경기가 아직 진행되지 않아 직관 상태를 등록할 수 없습니다.");
-                                            }
-                                        }}
-                                    >
-                                        <div className="scheduleInfo">
-                                            <span className="scheduleDate">
-                                                {formatDateWithDay(sch.matchDate)}
-                                            </span>
-                                            <span className="scheduleTime">
-                                                {formatTime(sch.matchTime)}
-                                            </span>
-                                            <span>
-                                                {sch.scoreHome !== null && sch.scoreAway !== null ? (
-                                                    sch.homeTeam === "서울" ? (
-                                                        <span>
-                                                    {/* '서울'이 홈팀인 경우 */}
-                                                            <span
-                                                                style={{
-                                                                    color:
-                                                                        sch.scoreHome > sch.scoreAway
-                                                                            ? "red"
-                                                                            : "inherit",
-                                                                }}>
-                                                        {sch.homeTeam}
-                                                    </span>
-                                                            {` ${sch.scoreHome} : ${sch.scoreAway} `}
-                                                            <span
-                                                                style={{color: sch.scoreHome < sch.scoreAway
-                                                                        ? "red"
-                                                                        : "inherit",}}>
-                                                        {opponent}
-                                                    </span>
-                                                </span>
-                                                    ) : (
-                                                        <span>
-                                                    {/* '서울'이 원정팀인 경우 */}
-                                                            <span
-                                                                style={{
-                                                                    color:
-                                                                        sch.scoreHome > sch.scoreAway
-                                                                            ? "red"
-                                                                            : "inherit",}}
-                                                            >{opponent}
-                                                    </span>
-                                                            {` ${sch.scoreHome} : ${sch.scoreAway} `}
-                                                            <span
-                                                                style={{color: sch.scoreHome < sch.scoreAway ? "red" : "inherit",}}
-                                                            >{sch.awayTeam}
-                                                    </span>
-                                                </span>
-                                                    )) : (`서울 vs ${opponent}`)}
-                                                {matchType && ` ${matchType}`}
-                                            </span>
-                                            <span className="scheduleDetail">
-                                                {attendanceIcon && (
-                                                    attendanceIcon === "직관 등록하기 ✏️" ? (
-                                                        <>{attendanceIcon}</>
-                                                    ) : (` ${attendanceIcon}`)
-                                                )}
-                                            </span>
-                                        </div>
-                                        {user && user.role === "admin" && (
-                                            <button
-                                                className="scoreUpdateBtn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedScoreSchedule(sch);
-                                                    openScoreUpdateModal();
-                                                }}
-                                            >
-                                                결과 등록✏️
-                                            </button>
-                                        )}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
-                </div>
-            </div>
 
             {isRegistrationModalOpen && <ScheduleRegistrationModal onClose={closeRegistrationModal} />}
             {isAttendanceModalOpen && selectedSchedule && (
