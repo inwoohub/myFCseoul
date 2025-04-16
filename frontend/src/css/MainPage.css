@@ -24,7 +24,7 @@
     gap: 5vw;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .MainPagebottom {
         flex-direction: column;
         gap: 2vh; /* 수직 간격을 적절하게 조절 */
@@ -32,7 +32,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .MainPage_homeimage {
 
         width: 80%;
@@ -42,3 +42,7 @@
     }
 }
 
+.Main_footer{
+    background-color: #212121;
+    height: 20vh;
+}

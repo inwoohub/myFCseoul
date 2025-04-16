@@ -26,11 +26,11 @@ function ScheduleList({ user, className }) {
     const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
     const [selectedDate, setSelectedDate] = useState(today);
 
-    // 모바일 여부 판단 (창 너비가 768px 이하일 때는 숫자만 표기)
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    // 모바일 여부 판단 (창 너비가 620px 이하일 때는 숫자만 표기)
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 620);
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
+            setIsMobile(window.innerWidth < 620);
         };
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
@@ -267,7 +267,7 @@ function ScheduleList({ user, className }) {
                     onChange={(value) => setSelectedDate(value)}
                     onClickDay={handleClickDay}
                     calendarType="gregory"
-                    // 768px 이하일 때는 숫자만, 그 이상은 "일"이 붙은 형식으로 렌더링
+                    // 620px 이하일 때는 숫자만, 그 이상은 "일"이 붙은 형식으로 렌더링
                     formatDay={(locale, date) =>
                         isMobile ? date.getDate() : `${date.getDate()}일`
                     }

@@ -21,7 +21,7 @@
     gap:20px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     /* 현재 달 컨테이너 크기 및 정렬 변경 (필요에 따라 조정) */
     .scheduleList {
         display: flex;
@@ -54,7 +54,7 @@
     width: 90%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .monthContainer {
         display: flex;
         justify-content: center;
@@ -125,7 +125,7 @@
     position: relative; /* 내부에 절대 위치 요소를 위한 기준 */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     /* 현재 달 컨테이너 크기 및 정렬 변경 (필요에 따라 조정) */
     .attendanceModalContent {
         width:90vw;
@@ -140,7 +140,7 @@
     justify-content: center; /* 중앙 정렬 (선택사항) */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     /* 현재 달 컨테이너 크기 및 정렬 변경 (필요에 따라 조정) */
     .attendanceOptions {
         display: flex;
@@ -157,7 +157,7 @@
     color: #EFE7E7;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     /* 현재 달 컨테이너 크기 및 정렬 변경 (필요에 따라 조정) */
     .attendanceOptions button {
         width:30vw;
@@ -207,7 +207,7 @@
     color: #EFE7E7;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .react-calendar {
         max-width: 80vh;
         width: 90vw; /* 달력 크기 조정 */
@@ -273,7 +273,7 @@
     font-size: 1.5rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .react-calendar__navigation__label__labelText {
         font-size: 17px;
     }
@@ -379,7 +379,7 @@
     transition: background-color 0.2s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .scheduleItem {
         width: 40vw; /* 화면에 맞춰 너비 조절, 필요에 따라 값을 조정하세요 */
         margin: 0.5rem auto; /* 좌우 중앙 정렬을 위해 auto 사용 */

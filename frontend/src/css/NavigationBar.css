@@ -14,8 +14,8 @@
     margin-right: 1vw;
 }
 
-/* 화면 폭 768px 이하일 때 로고 이미지 크기 변경 */
-@media (max-width: 768px) {
+/* 화면 폭 620px 이하일 때 로고 이미지 크기 변경 */
+@media (max-width: 620px) {
     .Navigation_logoimage {
         width: clamp(30px, 5vw, 40px);
         height: clamp(30px, 5vw, 40px);
@@ -67,8 +67,8 @@
     cursor: pointer;
 }
 
-/* 미디어 쿼리: 화면 폭 768px 이하에서 */
-@media (max-width: 768px) {
+/* 미디어 쿼리: 화면 폭 620px 이하에서 */
+@media (max-width: 620px) {
     .Navigation_nav,
     .Navigation_sign {
         display: none; /* 데스크탑 메뉴와 로그인 텍스트 숨김 */

@@ -3,8 +3,8 @@
     background-color: #282c34;
 }
 
-/* 화면이 768px 이하일 때 */
-@media (max-width: 768px) {
+/* 화면이 620px 이하일 때 */
+@media (max-width: 620px) {
     .MPSchedulePage {
         width: 70%;
         height: 30vh;
@@ -18,14 +18,14 @@
     font-size: 0.85em; /* 원하시는 스타일 */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .custom-mainschedule .react-calendar {
-        width: 80%;
+        width: 70vw;
         font-size: 0.85em;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .calendar-container {
         display: flex;
         justify-content: center;

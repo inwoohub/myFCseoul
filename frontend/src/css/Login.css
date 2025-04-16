@@ -32,7 +32,7 @@
     object-fit: cover; /* 선택 사항: 이미지의 내용을 영역에 맞게 크롭 */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .Login_logoimage {
         width: 100px;
         aspect-ratio: 1/1;
@@ -68,7 +68,7 @@
     display: flex;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .Login_text {
         font-size: 1rem; /* 폰트 크기도 줄임 */
         justify-content: center;

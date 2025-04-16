@@ -5,7 +5,7 @@
 }
 
 /* 화면이 768px 이하일 때 */
-@media (max-width: 768px) {
+@media (max-width: 620px) {
     .MPRankingPage {
         width: 70%;
         height: 30vh;

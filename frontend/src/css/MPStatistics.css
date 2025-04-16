@@ -1,13 +1,37 @@
 .MPStatisticsPage{
     width: 28vw;
-    background-color: chocolate;
+    background-color: #282c34;
+    height: 50vh;
+    border: 1px solid #EFE7E7;
+    color: #EFE7E7;
+    border-radius: 8px;
 }
 
-/* 화면이 768px 이하일 때 */
-@media (max-width: 768px) {
+/* 화면이 620px 이하일 때 */
+@media (max-width: 620px) {
     .MPStatisticsPage {
-        width: 70%;
-        height: 30vh;
+        width: 70vw;
+        height: 60vh;
         margin: 0 auto; /* 중앙 정렬 */
+    }
+}
+
+.Main_Statistics_btn_container{
+    display: flex;
+    justify-content: center;
+    color: #EFE7E7;
+}
+
+.Main_Statistics_btn{
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 0.5vh;
+}
+
+@media screen and (max-width: 620px) {
+    .Main_Statistics_btn{
+        font-size: 10px;
+        font-weight: bold;
+        margin-bottom: 2vh;
     }
 }

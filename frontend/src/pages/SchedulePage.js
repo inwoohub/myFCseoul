@@ -10,12 +10,12 @@ function SchedulePage() {
     const [myDataList, setMyDataList] = useState([]);
     const [schedules, setSchedules] = useState([]);
     const [loadingSchedules, setLoadingSchedules] = useState(true);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 620);
 
-    // 화면 크기 변경 감지 (768px 이하이면 mobile로 설정)
+    // 화면 크기 변경 감지 (620px 이하이면 mobile로 설정)
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
+            setIsMobile(window.innerWidth < 620);
         };
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
@@ -134,7 +134,7 @@ function SchedulePage() {
                         gap: "3vw",
                         flexDirection: isMobile ? "column" : "row"
                     }}>
-                        {/* 768px 미만일 경우 ScheduleWinRateChart는 렌더링하지 않음 */}
+                        {/* 620px 미만일 경우 ScheduleWinRateChart는 렌더링하지 않음 */}
                         { !isMobile && (
                             <ScheduleWinRateChart
                                 winCount={scheduleWinCount}
@@ -149,6 +149,9 @@ function SchedulePage() {
                         />
                     </div>
                 </div>
+            </div>
+            <div className="Main_footer">
+
             </div>
         </div>
     );

@@ -4,17 +4,13 @@ import "react-calendar/dist/Calendar.css";
 import GameDetailModal from "../components/GameDetailModal";
 import "../css/MPSchedule.css";
 
-function MPSchedule() {
+function MPSchedule({ schedules }) {
     const [date, setDate] = useState(new Date());
-    const [schedules, setSchedules] = useState([]);
-    const [loading, setLoading] = useState(true);
-    // 현재 보여지는 달(activeStartDate)
+    // 로딩 상태는 MainPage에서 처리되므로 이 상태는 제거하거나 초기값 없이 사용할 수 있음
+    // const [loading, setLoading] = useState(true);
     const [activeStartDate, setActiveStartDate] = useState(new Date());
-    // 창 너비가 1150px 미만이면 isMobile true
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1150);
-    // 클릭한 날짜에 해당하는 일정들을 담을 상태
     const [selectedGameSchedules, setSelectedGameSchedules] = useState([]);
-    // 모달 열림 여부
     const [isGameModalOpen, setIsGameModalOpen] = useState(false);
 
     // 창 크기 변경 감지
@@ -24,20 +20,6 @@ function MPSchedule() {
         };
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    // 일정 데이터 불러오기
-    useEffect(() => {
-        fetch("http://localhost:8080/api/schedule")
-            .then((response) => response.json())
-            .then((data) => {
-                setSchedules(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("일정 데이터를 불러오는 에러:", error);
-                setLoading(false);
-            });
     }, []);
 
     // 요일을 "일", "월", "화", "수", "목", "금", "토"로 표시
@@ -89,10 +71,6 @@ function MPSchedule() {
         }
         setDate(clickedDate);
     };
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <div className="custom-mainschedule">
