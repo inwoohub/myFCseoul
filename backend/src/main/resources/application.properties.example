@@ -3,9 +3,9 @@ server.port=8080
 
 # MySQL DB ??
 
-spring.datasource.url=jdbc:mysql://database-2.cfiaiw42ejy2.ap-southeast-2.rds.amazonaws.com:3306/myfcseoul?sslMode=DISABLED&allowPublicKeyRetrieval=true&serverTimezone=UTC
+spring.datasource.url=jdbc:mysql://아마존 RDS 엔드포인트
 spring.datasource.username=admin
-spring.datasource.password=dlsdndb123
+spring.datasource.password=DB비밀번호
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 # JPA ??
@@ -19,7 +19,7 @@ spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.Ph
 # snake_case ??: cheer_message, gallery, my_data, schedule, user ??? ???? ?? ??
 
 # Kakao OAuth2 ?? ??
-spring.security.oauth2.client.registration.kakao.client-id=723329b5c5f7d280f5aa7febc3b3b76f
+spring.security.oauth2.client.registration.kakao.client-id= Rest_API 값
 #spring.security.oauth2.client.registration.kakao.client-secret=YOUR_KAKAO_CLIENT_SECRET ?? x
 spring.security.oauth2.client.registration.kakao.client-authentication-method=none
 spring.security.oauth2.client.registration.kakao.authorization-grant-type=authorization_code
