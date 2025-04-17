@@ -1,14 +1,53 @@
-.MPRankingPage{
-    width: 28vw;
-    background-color: #61dafb;
-
+.MPRankingPage {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: #282c34;
+    border-radius: 8px;
+    color: #EFE7E7;
+}
+@media (max-width: 768px) {
+    .MPRankingPage { flex-direction: column; }
 }
 
-/* 화면이 768px 이하일 때 */
-@media (max-width: 620px) {
-    .MPRankingPage {
-        width: 70%;
-        height: 30vh;
-        margin: 0 auto; /* 중앙 정렬 */
-    }
+.rankingSection {
+    flex: 1;
+    background: #1A2B3B;
+    border-radius: 8px;
+    padding: 1rem;
+}
+.rankingSection h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.rankingList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.rankingList li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #444;
+}
+.rankingList li:last-child {
+    border-bottom: none;
+}
+
+.rank {
+    width: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+.name {
+    flex: 1;
+    padding: 0 0.5rem;
+    text-align: left;
+}
+.count {
+    min-width: 2rem;
+    text-align: right;
 }
