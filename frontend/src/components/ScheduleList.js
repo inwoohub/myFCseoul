@@ -211,14 +211,6 @@ function ScheduleList({ user, className }) {
         }
     };
 
-    if (loading) {
-        return (
-            <div className={`ScheduleList ${className || ""}`}>
-                <h3>K리그 일정 및 경기 결과</h3>
-                <p>Loading...</p>
-            </div>
-        );
-    }
 
     function formatTime(timeString) {
         const parts = timeString.split(":");

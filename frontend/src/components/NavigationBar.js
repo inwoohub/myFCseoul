@@ -93,7 +93,7 @@ function NavigationBar() {
             {isMobileMenuOpen &&
                 createPortal(
                     <nav
-                        className="Mobile_nav"
+                        className="Mobile_nav" style={{fontSize:"12px"}}
                         onClick={() => setIsMobileMenuOpen(false)}
                         // 스타일 혹은 CSS 파일에서 position, top, left, width, z-index 등 설정 필요
                     >

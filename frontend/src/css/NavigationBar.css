@@ -15,7 +15,7 @@
 }
 
 /* 화면 폭 620px 이하일 때 로고 이미지 크기 변경 */
-@media (max-width: 620px) {
+@media (max-width: 768px) {
     .Navigation_logoimage {
         width: clamp(30px, 5vw, 40px);
         height: clamp(30px, 5vw, 40px);
@@ -30,6 +30,10 @@
     cursor: pointer;
 }
 
+.Navigation_title:hover{
+    color: gray;
+}
+
 /* 상단 메뉴 스타일 */
 .Navigation_nav ul {
     font-size: 0.9rem;
@@ -40,6 +44,10 @@
     margin-left: 2vw;
     color: #EFE7E7;
     cursor: pointer;
+}
+
+.Navigation_nav li:hover{
+    color: gray;
 }
 
 .Navigation_sign {
@@ -67,8 +75,13 @@
     cursor: pointer;
 }
 
-/* 미디어 쿼리: 화면 폭 620px 이하에서 */
-@media (max-width: 620px) {
+.Hamburger:hover{
+    background-color: #881717;
+
+}
+
+/* 미디어 쿼리: 화면 폭 768px 이하에서 */
+@media (max-width: 768px) {
     .Navigation_nav,
     .Navigation_sign {
         display: none; /* 데스크탑 메뉴와 로그인 텍스트 숨김 */
@@ -93,13 +106,15 @@
 /* 모바일용 메뉴 (토글 시 표시) */
 .Mobile_nav {
     position: fixed;
-    top: 7vh;
+    top: 6vh;
     left: 0;
-    width: 30vw;
-    background-color: #9E1819 ;
-    height: 50vh;
+    width: 50vw;
+    background-color: #A81D1C;
+    height: 40vh;
     z-index: 1000;
 }
+
+
 
 .Mobile_nav ul {
     list-style: none;
@@ -115,6 +130,10 @@
     cursor: pointer;
 }
 
+.Mobile_nav li:hover{
+    color:gray;
+}
+
 /* 로고와 타이틀 그룹 */
 .LogoTitle {
     display: flex;
@@ -128,4 +147,8 @@
     cursor: pointer;
     margin-left: 1vw;
     margin-top: 1vh;
+}
+
+.Mobile_nav_header:hover{
+    color:gray;
 }

@@ -275,7 +275,7 @@
 
 @media (max-width: 620px) {
     .react-calendar__navigation__label__labelText {
-        font-size: 17px;
+        font-size: 10px;
     }
 }
 
@@ -381,12 +381,14 @@
 
 @media (max-width: 620px) {
     .scheduleItem {
-        width: 40vw; /* 화면에 맞춰 너비 조절, 필요에 따라 값을 조정하세요 */
+        width: 65vw; /* 화면에 맞춰 너비 조절, 필요에 따라 값을 조정하세요 */
         margin: 0.5rem auto; /* 좌우 중앙 정렬을 위해 auto 사용 */
     }
 }
 
-
+.Navigation_sign:hover{
+    color: gray;
+}
 
 .scheduleItem:hover {
     background-color: #333333;
@@ -444,3 +446,4 @@
     background-color: #282c34;
     font-size: 1.1rem;
 }
+

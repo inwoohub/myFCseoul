@@ -103,8 +103,7 @@ function SchedulePage() {
         return <div style={{backgroundColor:"#212121" ,height:"100vh"}}>
             <NavigationBar className="NavigationBar" />
             <div style={{width:"100%",height:"100%",display:"flex",justifyContent:"center"}}>
-                <span style={{marginTop:"30vh",color:"#EFE7E7",fontSize:"30px"}}>
-                Loading...
+                <span class="loader" style={{marginTop:"30vh"}}>
             </span>
             </div>
         </div>;
@@ -122,7 +121,7 @@ function SchedulePage() {
 
                 {/* 모바일일 경우 ScheduleStatistics가 ScheduleContent 아래에 세로로 쌓입니다 */}
                 <div className="ScheduleStatistics">
-                    <div style={{ color: "#9E1819", marginTop: "2vh", marginBottom: "4vh", marginLeft: "2vw", fontSize: "1.5rem", fontWeight: "bold" }}>
+                    <div style={{ display:"flex",justifyContent:"center",color: "#9E1819", marginTop: "2vh", marginBottom: "4vh", marginLeft: "2vw", fontSize: "1.5rem", fontWeight: "bold" }}>
                         <span>2025시즌 FC서울</span>
                     </div>
 

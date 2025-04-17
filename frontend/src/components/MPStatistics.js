@@ -7,20 +7,29 @@ import "../css/MPStatistics.css";
 
 // 숫자를 받아 소수점 이하가 0이면 정수로, 아니면 소수점 1자리까지 반환하는 헬퍼 함수
 const formatPercentage = (value) => {
-    // value는 퍼센트 값을 의미 (예: 50 또는 50.3)
     return value % 1 === 0 ? value.toString() : value.toFixed(1);
 };
 
-function MPStatistics({ winCount, drawCount, loseCount }) {
+function MPStatistics({ winCount, drawCount, loseCount, loading }) {
+    // 로딩 중 표시
+    if (loading) {
+        return (
+            <div className="MPStatisticsPage" style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "20vh" }}>
+                <span className="loader"></span>
+                <div style={{ color: "#EFE7E7", marginTop: "1rem" }}>불러오는 중...</div>
+            </div>
+        );
+    }
+
     const total = winCount + drawCount + loseCount;
     if (total === 0) {
         return (
-            <div className="MPStatisticsPage" style={{display: "flex", flexDirection: "column",  alignItems: "center"}}>
+            <div className="MPStatisticsPage" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <div className="Chart_title">
-                    <span style={{marginTop:"2vh"}}>나의 FC서울</span>
+                    <span style={{ marginTop: "2vh" }}>나의 FC서울</span>
                 </div>
-                <div className="AttendanceDoughnutChart_btn" style={{width:"70%",marginTop:"20vh"}}>
-                    <span style={{color:"#EFE7E7"}}>
+                <div className="AttendanceDoughnutChart_btn" style={{ width: "70%", marginTop: "20vh" }}>
+                    <span style={{ color: "#EFE7E7" }}>
                         현재 등록된 직관 정보가 없습니다.
                     </span>
                 </div>
@@ -28,9 +37,7 @@ function MPStatistics({ winCount, drawCount, loseCount }) {
         );
     }
 
-    // 승률 계산: total이 0이면 0, 아니면 (승리 경기 수 / 전체 경기 수) * 100 값을 계산
     const computedWinRate = total > 0 ? (winCount / total) * 100 : 0;
-    // formatPercentage 헬퍼를 사용하여 소수점 이하가 0이면 정수, 아니면 소수점 1자리까지 표기
     const winRate = formatPercentage(computedWinRate);
 
     const data = {
@@ -45,35 +52,26 @@ function MPStatistics({ winCount, drawCount, loseCount }) {
 
     const options = {
         maintainAspectRatio: false,
-        cutout: '60%', // 도넛 차트의 두께 설정
+        cutout: '60%',
         plugins: {
-            legend: {
-                display: false, // 범례 숨김
-            },
+            legend: { display: false },
             datalabels: {
-                // 각 도넛 슬라이스 위에 퍼센트 표시
                 formatter: (value) => {
-                    let perc = total > 0 ? (value / total) * 100 : 0;
+                    const perc = total > 0 ? (value / total) * 100 : 0;
                     return formatPercentage(perc) + '%';
                 },
-                color: "#fff", // 텍스트 색상
-                font: {
-                    size: 10,
-                    weight: "bold",
-                },
+                color: "#fff",
+                font: { size: 10, weight: "bold" },
                 anchor: 'center',
                 align: 'center',
             },
         },
-        animation: {
-            duration: 1500,
-            easing: 'easeInOutQuad',
-        },
+        animation: { duration: 1500, easing: 'easeInOutQuad' },
     };
 
     return (
         <div className="MPStatisticsPage">
-            <div style={{color:"#EFE7E7", width:"100%", display:"flex",marginTop:"2vh",justifyContent:"center",fontSize:"16px",fontWeight:"bold"}}>
+            <div style={{ color: "#EFE7E7", width: "100%", display: "flex", marginTop: "2vh", justifyContent: "center", fontSize: "16px", fontWeight: "bold" }}>
                 <span>나의 FC서울</span>
             </div>
             <div className="attendance-doughnut-container">
